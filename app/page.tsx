@@ -2,14 +2,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getBlogs } from "@/sanity/sanity-utils";
+import { client } from "@/sanity/client";
+import { SanityDocument } from "next-sanity";
+
+const query = `*[_type == 'blog'] | order(_createdAt desc) {
+                    _id,
+                    title,
+                    "slug": slug.current,
+                    smallDescription,
+                    "titleImage": titleImage.asset->url,
+                  }`;
+
+const options = { next: { revalidate: 30 } };
 
 export default async function Home() {
-  await fetch("https://morning-blog.sanity.studio/", {
-    next: { revalidate: 30 },
-  });
-
-  const data = await getBlogs();
+  const data = await client.fetch<SanityDocument[]>(query, {}, options);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 mt-5 gap-5">

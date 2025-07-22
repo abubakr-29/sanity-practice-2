@@ -19,10 +19,6 @@ export default async function BlogArticle({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  await fetch("https://morning-blog.sanity.studio/", {
-    next: { revalidate: 30 },
-  });
-
   const data = await client.fetch<SanityDocument>(query, await params, options);
 
   return (
