@@ -5,6 +5,10 @@ import Link from "next/link";
 import { getBlogs } from "@/sanity/sanity-utils";
 
 export default async function Home() {
+  await fetch("https://morning-blog.sanity.studio/", {
+    next: { revalidate: 30 },
+  });
+
   const data = await getBlogs();
 
   return (
