@@ -42,7 +42,26 @@ export default async function BlogArticle({
       />
 
       <div className="mt-16 prose prose-lg dark:prose-invert prose-li:marker:text-primary prose-a:text-primary">
-        <PortableText value={data.content} />
+        <PortableText
+          value={data.content}
+          components={{
+            types: {
+              image: ({ value }) => {
+                return (
+                  <div className="my-8">
+                    <Image
+                      src={value.asset?.url || ""}
+                      alt={value.alt || "Blog image"}
+                      width={800}
+                      height={600}
+                      className="rounded-lg border"
+                    />
+                  </div>
+                );
+              },
+            },
+          }}
+        />
       </div>
     </div>
   );
