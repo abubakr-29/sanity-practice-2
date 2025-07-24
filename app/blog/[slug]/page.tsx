@@ -3,14 +3,21 @@ import { PortableText, SanityDocument } from "next-sanity";
 import Image from "next/image";
 
 const query = `*[_type == 'blog' && slug.current == $slug] {
-                    _id,
-                    title,
-                    "slug": slug.current,
-                    smallDescription,
-                    publishedAt,
-                    "titleImage": titleImage.asset->url,
-                    content
-                  }[0]`;
+  _id,
+  title,
+  "slug": slug.current,
+  smallDescription,
+  publishedAt,
+  "titleImage": titleImage.asset->url,
+  content[]{
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url,
+      "alt": alt
+    }
+  }
+}[0]`;
 
 const options = { next: { revalidate: 30 } };
 
@@ -50,7 +57,7 @@ export default async function BlogArticle({
                 return (
                   <div className="my-8">
                     <Image
-                      src={value.asset?.url || ""}
+                      src={value.url || ""}
                       alt={value.alt || "Blog image"}
                       width={800}
                       height={600}
